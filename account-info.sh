@@ -1,5 +1,15 @@
 #!/bin/bash
-summary=false
+# This is a utility script used to gather info about local users on a linux system. 
+# By default, the script simply lists all users on a system
+# If ran in summary mode (-s, --summary), it gives information about all users on the system
+# If ran against a specific user, it gives information about that user. Running (-s, --summary) against a user has the same result
+
+if [ "$EUID" -ne 0 ]; then # Checks if the user executing the script is root
+  echo "This script must be run as root"
+  exit 1
+fi
+
+summary=false # Var used to check if script is running in summary mode
 users=($(cut -d: -f1 /etc/passwd))
 for arg in "$@"; do
     case "$arg" in
@@ -35,13 +45,9 @@ if [ -n "$user" ]; then
             echo "PASSWORD STATUS:Unlocked"
             ;;
     esac
-    # secondary group ids
     exit
 elif [ "$summary" = "true" ]; then
     echo "INFO ABOUT SUMMARY"
 else
     echo "${users[@]}"
 fi
-
-# chage -l
-# lastlog
