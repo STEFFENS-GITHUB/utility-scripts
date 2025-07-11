@@ -1,2 +1,2 @@
-# BASH ACCOUNT INFO
-### This is a utility script meant for linux, to display local user account information with a variety of options.
+# UTILITY SCRIPTS README
+### This is a repository of a variety of utility scripts I have written for the purpose of study/practice
