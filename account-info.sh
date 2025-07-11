@@ -33,7 +33,7 @@ if [ -n "$user" ]; then
     echo -n "HOME DIRECTORY:"; cat /etc/passwd | grep "$user" | cut -d: -f6
     echo -n "LOGIN SHELL:"; cat /etc/passwd | grep "$user" | cut -d: -f7
     
-    password_status=$(cat /etc/shadow | grep '^DONALD' | cut -d: -f2)
+    password_status=$(cat /etc/shadow | grep "^$user" | cut -d: -f2)
     case "$password_status" in 
         '!!'*)
             echo "PASSWORD STATUS:Not set"
@@ -47,7 +47,9 @@ if [ -n "$user" ]; then
     esac
     exit
 elif [ "$summary" = "true" ]; then
-    echo "INFO ABOUT SUMMARY"
+    echo -n "TOTAL SYSTEM USERS:"; cat /etc/passwd | wc -l
+    echo -n "REGULAR USERS:"; awk -F: '$3 > 1000 {count++} END {print count}' /etc/passwd # Prints number of users with UID 1000 or greater
+    echo -n "NUMBER OF LOCKED ACCOUNTS:"; grep '^.*:!' /etc/shadow | grep -v '^.*:!!' | grep -v '^.*:!\*' | wc -l # Checks number of locked accounts, excludes accounts starting with !! or !*
 else
     echo "${users[@]}"
 fi
